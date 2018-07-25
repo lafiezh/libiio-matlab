@@ -269,7 +269,7 @@ classdef libiio_if < handle
                 % Create the IIO buffer used to write data
                 obj.iio_buf_size = obj.data_ch_size * obj.iio_scan_elm_no;
                 obj.iio_buffer = calllib(obj.libname, 'iio_device_create_buffer', obj.iio_dev,...
-                                         obj.data_ch_size, 1);
+                                         obj.data_buf_size, 1);
             end
 
             msg_log = [msg_log sprintf('%s: %s output data channels successfully initialized\n', class(obj), obj.dev_name)];
@@ -521,7 +521,7 @@ classdef libiio_if < handle
             % Create the IIO buffer used to write data
             obj.iio_buf_size = obj.data_ch_size * obj.iio_scan_elm_no;
             obj.iio_buffer = calllib(obj.libname, 'iio_device_create_buffer', obj.iio_dev,...
-                                     obj.data_ch_size, 1);
+                                     obj.data_buf_size, 1);
 
             % Transmit the data
             buffer = calllib(obj.libname, 'iio_buffer_start', obj.iio_buffer);
@@ -529,7 +529,7 @@ classdef libiio_if < handle
             for i = 1 : obj.data_ch_no
                 buffer.Value(i : obj.iio_scan_elm_no : obj.iio_buf_size) = int16(data{i});
             end
-            for i = obj.data_ch_no + 1 : obj.iio_scan_elm_no
+            for i = (obj.data_ch_no + 1) : obj.iio_scan_elm_no
                 buffer.Value(i : obj.iio_scan_elm_no : obj.iio_buf_size) = 0;
             end
             calllib(obj.libname, 'iio_buffer_push', obj.iio_buffer);
